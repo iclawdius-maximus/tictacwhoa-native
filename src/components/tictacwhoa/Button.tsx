@@ -10,6 +10,10 @@ export type ButtonProps = PressableProps & {
 export function Button({ title, variant = 'primary', style, ...rest }: ButtonProps) {
   return (
     <Pressable
+      accessibilityRole="button"
+      role="button"
+      accessible={true}
+      accessibilityLabel={title}
       style={({ pressed }) => {
         const base: ViewStyle[] = [styles.button, variant === 'primary' ? styles.primary : styles.secondary];
         if (pressed) base.push(styles.pressed);

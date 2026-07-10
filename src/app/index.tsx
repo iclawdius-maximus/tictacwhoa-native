@@ -8,7 +8,7 @@ import { Button } from '@/components/tictacwhoa/Button';
 import { useSocket } from '@/contexts/SocketContext';
 
 export default function HomeScreen() {
-  const { connected, serverUrl } = useSocket();
+  const { connected, serverUrl, connectionError, transport, deviceId } = useSocket();
 
   return (
     <ImageBackground
@@ -24,6 +24,30 @@ export default function HomeScreen() {
           <ThemedText type="titleGlow" style={styles.title} themeColor="text">
             WHOA
           </ThemedText>
+
+          <ThemedView style={styles.statusBox}>
+            <ThemedText type="smallBold" style={styles.statusText}>
+              {connected ? '🟢 Connected' : '🔴 Disconnected'}
+            </ThemedText>
+            <ThemedText type="small" style={styles.statusDetail}>
+              Server: {serverUrl || '—'}
+            </ThemedText>
+            {transport ? (
+              <ThemedText type="small" style={styles.statusDetail}>
+                Transport: {transport}
+              </ThemedText>
+            ) : null}
+            {deviceId ? (
+              <ThemedText type="small" style={styles.statusDetail}>
+                Device: {deviceId}
+              </ThemedText>
+            ) : null}
+            {connectionError ? (
+              <ThemedText type="small" style={styles.errorText}>
+                Error: {connectionError}
+              </ThemedText>
+            ) : null}
+          </ThemedView>
 
           <ThemedView style={styles.buttonContainer}>
             <Link href="/lobby" asChild>
@@ -64,6 +88,31 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 72,
     lineHeight: 80,
+  },
+  statusBox: {
+    width: '100%',
+    maxWidth: 360,
+    alignItems: 'center',
+    backgroundColor: 'rgba(51,51,51,0.85)',
+    borderRadius: 12,
+    padding: 12,
+    borderWidth: 2,
+    borderColor: '#fff',
+    gap: 4,
+  },
+  statusText: {
+    color: '#fff',
+    fontSize: 16,
+  },
+  statusDetail: {
+    color: '#ccc',
+    fontSize: 12,
+    textAlign: 'center',
+  },
+  errorText: {
+    color: '#ff6b6b',
+    fontSize: 12,
+    textAlign: 'center',
   },
   buttonContainer: {
     gap: 16,

@@ -1,0 +1,10 @@
+appId: com.vorotech.tictacwhoa
+---
+- launchApp
+- takeScreenshot: /tmp/tictacwhoa_home
+- tapOn: "Enter Matchmaking"
+- takeScreenshot: /tmp/tictacwhoa_lobby
+- tapOn: "Random Matchmaking"
+- waitForAnimationToEnd:
+    timeout: 5000
+- takeScreenshot: /tmp/tictacwhoa_game

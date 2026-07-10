@@ -10,15 +10,17 @@ import { useSocket } from '@/contexts/SocketContext';
 
 export default function LobbyScreen() {
   const router = useRouter();
-  const { socket, deviceId } = useSocket();
+  const { socket, deviceId, connected, serverUrl, connectionError, transport } = useSocket();
   const [searching, setSearching] = useState(false);
   const [generatedCode, setGeneratedCode] = useState('');
   const [roomCode, setRoomCode] = useState('');
   const [lobbyUsers, setLobbyUsers] = useState<string[]>([]);
   const [error, setError] = useState<string | null>(null);
+  const [matchStarted, setMatchStarted] = useState(false);
 
   useEffect(() => {
     if (!socket) return;
+    if (matchStarted) return;
 
     const onLobbyUpdate = (data: { users: { userData?: { deviceId?: string } }[] }) => {
       setLobbyUsers(data.users.map((u) => u.userData?.deviceId ?? 'unknown'));
@@ -30,6 +32,8 @@ export default function LobbyScreen() {
       opponent: { deviceId: string };
       isPlayerTurn: boolean;
     }) => {
+      console.log('[lobby] game-started', data);
+      setMatchStarted(true);
       setSearching(false);
       router.push({
         pathname: '/game/[id]',
@@ -43,10 +47,12 @@ export default function LobbyScreen() {
     };
 
     const onInviteCreated = (data: { roomCode: string }) => {
+      console.log('[lobby] invite-created', data);
       setGeneratedCode(data.roomCode);
     };
 
     const onJoinError = (data: { message: string }) => {
+      console.log('[lobby] join-error', data);
       setError(data.message);
       setSearching(false);
     };
@@ -62,7 +68,7 @@ export default function LobbyScreen() {
       socket.off('invite-created', onInviteCreated);
       socket.off('join-error', onJoinError);
     };
-  }, [socket, router]);
+  }, [socket, router, matchStarted]);
 
   const handleRandomMatchmaking = () => {
     if (!socket || !deviceId) return;
@@ -84,18 +90,7 @@ export default function LobbyScreen() {
     socket.emit('join-invite', roomCode.trim().toUpperCase());
   };
 
-  const handleStartInviteGame = () => {
-    if (!generatedCode) return;
-    router.push({
-      pathname: '/game/[id]',
-      params: {
-        id: generatedCode,
-        playerSymbol: 'X',
-        opponentId: 'waiting',
-        isPlayerTurn: 'true',
-      },
-    });
-  };
+  const canMatchmake = !!socket && connected;
 
   return (
     <ImageBackground
@@ -109,11 +104,30 @@ export default function LobbyScreen() {
             Matchmaking
           </ThemedText>
 
+          <ThemedView style={styles.statusBox}>
+            <ThemedText type="smallBold" style={styles.statusText}>
+              {connected ? '🟢 Connected' : '🔴 Disconnected'}
+            </ThemedText>
+            <ThemedText type="small" style={styles.statusDetail}>
+              Server: {serverUrl || '—'}
+            </ThemedText>
+            {transport ? (
+              <ThemedText type="small" style={styles.statusDetail}>
+                Transport: {transport}
+              </ThemedText>
+            ) : null}
+            {connectionError ? (
+              <ThemedText type="small" style={styles.errorText}>
+                Error: {connectionError}
+              </ThemedText>
+            ) : null}
+          </ThemedView>
+
           <ThemedView style={styles.optionsContainer}>
             <Button
               title={searching ? 'Searching...' : 'Random Matchmaking'}
               onPress={handleRandomMatchmaking}
-              disabled={searching || !socket}
+              disabled={searching || !canMatchmake}
             />
 
             <ThemedView style={styles.divider} />
@@ -127,14 +141,12 @@ export default function LobbyScreen() {
                 <ThemedText type="default" style={styles.roomCodeText}>
                   Room Code: {generatedCode}
                 </ThemedText>
-                <Button
-                  title="Start Game"
-                  onPress={handleStartInviteGame}
-                  style={styles.startButton}
-                />
+                <ThemedText type="small" style={styles.waitingText}>
+                  Waiting for opponent to join...
+                </ThemedText>
               </ThemedView>
             ) : (
-              <Button title="Generate Room Code" onPress={handleGenerateInvite} disabled={!socket} />
+              <Button title="Generate Room Code" onPress={handleGenerateInvite} disabled={!canMatchmake} />
             )}
 
             <ThemedView style={styles.divider} />
@@ -156,7 +168,7 @@ export default function LobbyScreen() {
               <Button
                 title="Join"
                 onPress={handleJoinInvite}
-                disabled={!roomCode.trim() || !socket}
+                disabled={!roomCode.trim() || !canMatchmake}
               />
             </View>
 
@@ -246,8 +258,35 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: '#fff',
   },
-  startButton: {
-    marginTop: 4,
+  waitingText: {
+    color: '#ccc',
+    fontSize: 12,
+    textAlign: 'center',
+  },
+  statusBox: {
+    width: '100%',
+    maxWidth: 360,
+    alignItems: 'center',
+    backgroundColor: 'rgba(51,51,51,0.85)',
+    borderRadius: 12,
+    padding: 12,
+    borderWidth: 2,
+    borderColor: '#fff',
+    gap: 4,
+  },
+  statusText: {
+    color: '#fff',
+    fontSize: 16,
+  },
+  statusDetail: {
+    color: '#ccc',
+    fontSize: 12,
+    textAlign: 'center',
+  },
+  errorText: {
+    color: '#ff6b6b',
+    fontSize: 12,
+    textAlign: 'center',
   },
   inputContainer: {
     width: '100%',
