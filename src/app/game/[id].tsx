@@ -62,7 +62,15 @@ export default function GameScreen() {
       setCurrentTurn(data.currentTurn);
       setUsedMoves(data.usedPowerMoves[mySymbol as 'X' | 'O']);
       setGameOver(data.gameOver);
-      setMessage(data.winner ? `${data.winner} wins!` : "It's a tie!");
+      setMessage(
+        data.gameOver
+          ? data.winner
+            ? `${data.winner} wins!`
+            : "It's a tie!"
+          : data.currentTurn === mySymbol
+            ? 'Your turn'
+            : "Opponent's turn"
+      );
       setSelectedPower(null);
       setSwapFirst(null);
       setMojoFirst(null);
