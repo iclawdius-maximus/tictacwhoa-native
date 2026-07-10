@@ -6,7 +6,8 @@ import { getOrCreateDeviceId } from '@/utils/deviceId';
 
 const DEFAULT_SERVER_URL = 'http://localhost:3000';
 // Beta builds tunnel to a locally running WebSocket server via ngrok.
-// Set SOCKET_SERVER_URL to the active tunnel URL (e.g. https://something.ngrok.app).
+// Set EXPO_PUBLIC_SOCKET_SERVER_URL to the active tunnel URL.
+const SOCKET_SERVER_URL = process.env.EXPO_PUBLIC_SOCKET_SERVER_URL || DEFAULT_SERVER_URL;
 
 export type SocketContextValue = {
   socket: Socket | null;
@@ -37,7 +38,7 @@ export type SocketProviderProps = {
 
 export function SocketProvider({
   children,
-  serverUrl = process.env.SOCKET_SERVER_URL || DEFAULT_SERVER_URL,
+  serverUrl = process.env.EXPO_PUBLIC_SOCKET_SERVER_URL || DEFAULT_SERVER_URL,
 }: SocketProviderProps) {
   const [deviceId, setDeviceId] = useState<string | null>(null);
   const [connected, setConnected] = useState(false);
