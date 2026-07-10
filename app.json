@@ -26,13 +26,13 @@
       "favicon": "./assets/images/favicon.png"
     },
     "updates": {
-      "fallbackToCacheTimeout": 0,
       "enabled": true,
-      "checkAutomatically": "ON_LOAD"
+      "checkAutomatically": "ON_LOAD",
+      "fallbackToCacheTimeout": 0,
+      "url": "https://u.expo.dev/9bdcc1d0-13ef-4511-ac88-1c7a986254d0"
     },
-    "runtimeVersion": {
-      "policy": "appVersion"
-    },
+    "runtimeVersion": "1.0.0",
+    "owner": "iclawdius",
     "extra": {
       "eas": {
         "projectId": "9bdcc1d0-13ef-4511-ac88-1c7a986254d0"
@@ -40,6 +40,7 @@
     },
     "plugins": [
       "expo-router",
+      "expo-updates",
       [
         "./plugins/with-swift-settings"
       ],
