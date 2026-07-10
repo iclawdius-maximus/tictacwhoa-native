@@ -4,9 +4,9 @@ import { io, Socket } from 'socket.io-client';
 
 import { getOrCreateDeviceId } from '@/utils/deviceId';
 
-const DEFAULT_SERVER_URL = 'http://localhost:3000';
-// Beta builds tunnel to a locally running WebSocket server via ngrok.
-// Set EXPO_PUBLIC_SOCKET_SERVER_URL to the active tunnel URL.
+const DEFAULT_SERVER_URL = 'https://iclawd.ngrok.app';
+// Beta builds use the ngrok tunnel to the locally running WebSocket server.
+// For local dev, override with EXPO_PUBLIC_SOCKET_SERVER_URL.
 const SOCKET_SERVER_URL = process.env.EXPO_PUBLIC_SOCKET_SERVER_URL || DEFAULT_SERVER_URL;
 
 export type SocketContextValue = {
