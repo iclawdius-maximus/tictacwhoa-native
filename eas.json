@@ -16,6 +16,9 @@
       "channel": "preview",
       "ios": {
         "resourceClass": "m-medium"
+      },
+      "env": {
+        "SOCKET_SERVER_URL": "https://iclawd.ngrok.app"
       }
     },
     "production": {
