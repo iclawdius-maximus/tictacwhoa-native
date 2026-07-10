@@ -34,10 +34,6 @@ export default function HomeScreen() {
               <Button title="How To Play" variant="secondary" style={styles.secondaryButton} />
             </Link>
           </ThemedView>
-
-          <ThemedText type="small" style={styles.status} themeColor="text">
-            {connected ? 'Connected' : 'Not connected'} to {serverUrl}
-          </ThemedText>
         </ThemedView>
       </SafeAreaView>
     </ImageBackground>
@@ -77,9 +73,5 @@ const styles = StyleSheet.create({
   },
   secondaryButton: {
     marginTop: 8,
-  },
-  status: {
-    marginTop: 24,
-    textAlign: 'center',
   },
 });
