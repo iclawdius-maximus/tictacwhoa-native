@@ -3,15 +3,7 @@ import { io, Socket } from 'socket.io-client';
 
 import { getOrCreateDeviceId } from '@/utils/deviceId';
 
-export type ServerConfig = {
-  host: string;
-  port: number;
-};
-
-const DEFAULT_SERVER: ServerConfig = {
-  host: process.env.SOCKET_SERVER_URL ? new URL(process.env.SOCKET_SERVER_URL).hostname : 'localhost',
-  port: process.env.SOCKET_SERVER_URL ? Number(new URL(process.env.SOCKET_SERVER_URL).port) || 443 : 3000,
-};
+const DEFAULT_SERVER_URL = 'http://localhost:3000';
 
 export type SocketContextValue = {
   socket: Socket | null;
@@ -33,15 +25,16 @@ export function useSocket() {
 
 export type SocketProviderProps = {
   children: React.ReactNode;
-  serverConfig?: ServerConfig;
+  serverUrl?: string;
 };
 
-export function SocketProvider({ children, serverConfig = DEFAULT_SERVER }: SocketProviderProps) {
+export function SocketProvider({
+  children,
+  serverUrl = process.env.SOCKET_SERVER_URL || DEFAULT_SERVER_URL,
+}: SocketProviderProps) {
   const [deviceId, setDeviceId] = useState<string | null>(null);
   const [connected, setConnected] = useState(false);
   const [socketState, setSocketState] = useState<Socket | null>(null);
-
-  const serverUrl = `http://${serverConfig.host}:${serverConfig.port}`;
 
   useEffect(() => {
     let isMounted = true;
