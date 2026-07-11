@@ -1,4 +1,4 @@
-import { ImageBackground, StyleSheet } from 'react-native';
+import { ImageBackground, StyleSheet, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Link } from 'expo-router';
 
@@ -25,7 +25,7 @@ export default function HomeScreen() {
             WHOA
           </ThemedText>
 
-          <ThemedView style={styles.buttonContainer}>
+          <View style={styles.buttonContainer}>
             <Link href="/lobby" asChild>
               <Button title="Enter Matchmaking" />
             </Link>
@@ -33,7 +33,7 @@ export default function HomeScreen() {
             <Link href="/how-to-play" asChild>
               <Button title="How To Play" variant="secondary" style={styles.secondaryButton} />
             </Link>
-          </ThemedView>
+          </View>
 
           <ThemedText type="small" style={styles.status} themeColor="text">
             {connected ? 'Connected' : 'Not connected'} to {serverUrl}
