@@ -18,8 +18,8 @@ module.exports = {
   ],
   moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx', 'json', 'node'],
   moduleNameMapper: {
+    '^@/assets/(.*)$': '<rootDir>/__mocks__/fileMock.js',
     '^@/(.*)$': '<rootDir>/src/$1',
-    '^@/assets/(.*)$': '<rootDir>/assets/$1',
     '\\.(jpg|jpeg|png|gif|webp|svg)$': '<rootDir>/__mocks__/fileMock.js',
   },
 };

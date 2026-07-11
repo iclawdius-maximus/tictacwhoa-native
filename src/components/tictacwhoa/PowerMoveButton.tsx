@@ -9,6 +9,7 @@ export type PowerMoveButtonProps = {
   used: boolean;
   selected: boolean;
   onPress: () => void;
+  disabled?: boolean;
 };
 
 const enabledIcons: Record<PowerMoveType, any> = {
@@ -29,16 +30,18 @@ const disabledIcons: Record<PowerMoveType, any> = {
   cloak: require('@/assets/img/Cloak_disabled.png'),
 };
 
-export function PowerMoveButton({ type, used, selected, onPress }: PowerMoveButtonProps) {
+export function PowerMoveButton({ type, used, selected, onPress, disabled }: PowerMoveButtonProps) {
   const icon = used ? disabledIcons[type] : enabledIcons[type];
 
   return (
     <Pressable
-      onPress={used ? undefined : onPress}
+      onPress={used || disabled ? undefined : onPress}
+      disabled={disabled}
       style={({ pressed }) => {
         const base: ViewStyle[] = [styles.button];
         if (selected) base.push(styles.selected);
-        if (pressed && !used) base.push(styles.pressed);
+        if (pressed && !used && !disabled) base.push(styles.pressed);
+        if (disabled) base.push(styles.disabled);
         return base;
       }}
     >
@@ -70,6 +73,9 @@ const styles = StyleSheet.create({
   },
   pressed: {
     opacity: 0.8,
+  },
+  disabled: {
+    opacity: 0.4,
   },
   used: {
     opacity: 0.5,

@@ -1,1 +1,1 @@
-module.exports = "Background_lrg.png";
+module.exports = { uri: 'mocked-asset.png' };
